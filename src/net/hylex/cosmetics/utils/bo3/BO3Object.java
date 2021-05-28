@@ -3,6 +3,7 @@ package net.hylex.cosmetics.utils.bo3;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -12,11 +13,14 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class BO3Object implements Cloneable {
+public class BO3Object {
 	
 	@NonNull
 	@Getter
 	private List<BO3Block> blocks;
+	@Getter
+	private List<Block> pasted = new ArrayList<>();
+	
 	private Location lastPaste;
 	
 	public List<Block> getPasteSpaceBlocks(Location location){
@@ -26,33 +30,28 @@ public class BO3Object implements Cloneable {
 	}
 
 	@SuppressWarnings("deprecation")
-	public void paste(Location location) {
-		blocks.forEach(b -> location.clone().add(b.getX(), b.getY(), b.getZ()).getBlock()
-				.setTypeIdAndData(b.getMaterial().getId(), b.getData(), true));
-		lastPaste = location.clone();
-	}
+	public List<Block> paste(Location location) {
+		blocks.forEach(new Consumer<BO3Block>() {
 
-	@SuppressWarnings("deprecation")
-	public void undo(Location location) {
-		Collections.reverse(blocks);
-		blocks.forEach(
-				b -> location.clone().add(b.getX(), b.getY(), b.getZ()).getBlock().setTypeIdAndData(0, (byte) 0, true));
-		
+			@Override
+			public void accept(BO3Block b) {
+				Block block = location.clone().add(b.getX(), b.getY(), b.getZ()).getBlock();
+				block.setTypeIdAndData(b.getMaterial().getId(), b.getData(), true);
+				pasted.add(block);
+			}
+			
+		});
+		lastPaste = location.clone();
+		return pasted;
 	}
 
 	public void undo() {
 		if (lastPaste != null) {
-			undo(lastPaste);
+			Collections.reverse(pasted);
+			pasted.forEach(
+					b -> b.setTypeIdAndData(0, (byte) 0, true));
 			lastPaste = null;
-		}
-	}
-	
-	@Override
-	public BO3Object clone() {
-		try {
-			return (BO3Object) super.clone();
-		} catch (CloneNotSupportedException e) {
-			return null;
+			pasted = new ArrayList<>();
 		}
 	}
 	

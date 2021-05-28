@@ -1,8 +1,7 @@
 package net.hylex.cosmetics;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.entity.Player;
@@ -10,7 +9,7 @@ import org.bukkit.entity.Player;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import net.hylex.cosmetics.cosmetics.baloons.CBaloons;
+import net.hylex.cosmetics.cosmetics.balloons.CBalloons;
 import net.hylex.cosmetics.cosmetics.skeleton.CSkeleton;
 import net.hylex.cosmetics.cosmetics.trampoline.CTrampoline;
 
@@ -21,16 +20,11 @@ public class CosmeticsManager {
 	@NonNull
 	private HylexCosmetics instance;
 	
-	private List<CosmeticBase> cosmetics = new ArrayList<>();
-	private HashMap<UUID, CosmeticBase> playerCosmetic = new HashMap<>();
+	private Map<String, CosmeticBase> cosmetics = new HashMap<>();
+	private Map<UUID, CosmeticBase> playerCosmetic = new HashMap<>();
 	
 	public CosmeticBase getCosmeticByName(String cosmeticName) {
-		for(CosmeticBase cosmetic : cosmetics) {
-			if(cosmetic.getName().equalsIgnoreCase(cosmeticName)) {
-				return cosmetic;
-			}
-		}
-		return null;
+		return cosmetics.get(cosmeticName.toLowerCase());
 	}
 	
 	public CosmeticBase getActiveCosmetic(Player p) {
@@ -47,9 +41,13 @@ public class CosmeticsManager {
 	
 	public void start() {
 		instance.getCommand("engenhoca").setExecutor(new CosmeticCommand(this));
-		cosmetics.add(new CBaloons(instance));
-		cosmetics.add(new CTrampoline(instance));
-		cosmetics.add(new CSkeleton(instance));
+		registerEngenhoca(new CBalloons(instance));
+		registerEngenhoca(new CTrampoline(instance));
+		registerEngenhoca(new CSkeleton(instance));
+	}
+	
+	private void registerEngenhoca(CosmeticBase cosmetic) {
+		cosmetics.put(cosmetic.getName().toLowerCase(), cosmetic);
 	}
 
 }
