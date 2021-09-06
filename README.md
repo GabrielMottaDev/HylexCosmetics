@@ -11,6 +11,8 @@ Para isso dividi os balões em 2 tipos:
 - Pequeno: Uma armor stand invisível que utiliza o bloco como capacete.
 - Grande: Uma giant zombie invisível segurando o bloco em sua mão.
 
+Com a estrutura do balão finalizada, precisei separar uma thread assíncrona que de tempos em tempos impulsiona um determinado grupo de balões para cima.
+
 ## Pula-Pula
 ![Alt Text](https://github.com/GabrielMottaDev/HylexCosmetics/raw/main/docs/pula-pula.gif)
 
