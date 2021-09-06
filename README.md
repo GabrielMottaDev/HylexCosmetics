@@ -1,5 +1,5 @@
 # HylexCosmetics
-Projeto com Engenhocas de teste para o Hylex
+Projeto com Cosmetics/Engenhocas para o servidor de Minecraft Hylex
 
 ## Balões
 ![Alt Text](https://github.com/GabrielMottaDev/HylexCosmetics/raw/main/docs/baloes.gif)
